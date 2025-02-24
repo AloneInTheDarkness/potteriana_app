@@ -1,0 +1,9 @@
+query Movies{
+    movies {
+        totalCount
+        nodes {
+            title
+            slug
+        }
+    }
+}

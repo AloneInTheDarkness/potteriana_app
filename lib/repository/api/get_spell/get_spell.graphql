@@ -1,0 +1,14 @@
+query Spell ($slug: String!){
+    spell(slug: $slug) {
+        slug
+        name
+        image
+        wiki
+        effect
+        category
+        creator
+        hand
+        incantation
+        light
+    }
+}

@@ -1,0 +1,13 @@
+query Spells($after: String){
+    spells(after: $after) {
+        totalCount
+        pageInfo{
+            endCursor
+        }
+        nodes {
+            slug
+            image
+            name
+        }
+    }
+}

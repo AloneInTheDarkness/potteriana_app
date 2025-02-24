@@ -1,0 +1,22 @@
+query Movie($slug: String!){
+    movie(slug: $slug) {
+        slug
+        title
+        boxOffice
+        budget
+        poster
+        rating
+        runningTime
+        summary
+        trailer
+        wiki
+        releaseDate
+        cinematographers
+        directors
+        distributors
+        editors
+        musicComposers
+        producers
+        screenwriters
+    }
+}

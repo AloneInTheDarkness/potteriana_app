@@ -1,0 +1,13 @@
+query Potions($after: String){
+    potions(after: $after) {
+        totalCount
+        pageInfo{
+            endCursor
+        }
+        nodes {
+            slug
+            image
+            name
+        }
+    }
+}

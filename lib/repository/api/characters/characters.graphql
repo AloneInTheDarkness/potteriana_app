@@ -1,0 +1,13 @@
+query Characters($after: String){
+    characters(after: $after) {
+        totalCount
+        pageInfo{
+            endCursor
+        }
+        nodes {
+            slug
+            image
+            name
+        }
+    }
+}

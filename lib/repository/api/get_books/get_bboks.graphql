@@ -1,0 +1,9 @@
+query Bboks{
+    books {
+        totalCount
+        nodes {
+            title
+            slug
+        }
+    }
+}

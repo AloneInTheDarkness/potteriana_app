@@ -1,0 +1,25 @@
+query Book($slug: String!){
+    book(slug: $slug) {
+        author
+        slug
+        chapters {
+            edges {
+                cursor
+            }
+            nodes {
+                title
+            }
+            pageInfo {
+                hasNextPage
+            }
+            totalCount
+        }
+        title
+        summary
+        cover
+        dedication
+        pages
+        releaseDate
+        wiki
+    }
+}

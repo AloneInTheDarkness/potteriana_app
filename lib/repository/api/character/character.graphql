@@ -1,0 +1,30 @@
+query Character ($slug: String!){
+    character(slug: $slug) {
+        aliasNames
+        animagus
+        bloodStatus
+        boggart
+        born
+        died
+        eyeColor
+        familyMembers
+        gender
+        hairColor
+        height
+        house
+        image
+        jobs
+        maritalStatus
+        name
+        nationality
+        patronus
+        romances
+        skinColor
+        slug
+        species
+        titles
+        wands
+        weight
+        wiki
+    }
+}

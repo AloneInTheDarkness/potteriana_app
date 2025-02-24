@@ -1,0 +1,16 @@
+query Potion ($slug: String!){
+    potion(slug: $slug) {
+        slug
+        wiki
+        characteristics
+        difficulty
+        effect
+        image
+        ingredients
+        inventors
+        manufacturers
+        name
+        sideEffects
+        time
+    }
+}
