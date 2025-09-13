@@ -33,5 +33,6 @@ class Book with _$Book {
         dedication: dTO.dedication,
         pages: dTO.pages,
         releaseDate: dTO.releaseDate,
+    wiki: dTO.wiki,
       );
 }

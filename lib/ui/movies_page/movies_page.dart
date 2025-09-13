@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:potteriana_ult/ui/shared/app_theme/app_colors.dart';
+import 'package:potteriana_ult/ui/shared/buttons/category_button.dart';
 
 import '../../bloc/movies_bloc/movies_bloc.dart';
 import '../../bloc/movies_bloc/movies_state.dart';
@@ -13,8 +15,10 @@ class MoviesPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // backgroundColor: AppColors.gray400,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          centerTitle: true,
+          backgroundColor: AppColors.blue,
           title: const Text("Movies List"),
         ),
         body: BlocBuilder<MoviesBloc, MoviesState>(builder: (context, state) {
@@ -47,8 +51,8 @@ class MoviesPage extends StatelessWidget implements AutoRouteWrapper {
                   itemBuilder: (context, index) {
                     if (state.moviesList[index].title != null) {
                       return ListTile(
-                        title: TextButton(
-                          onPressed: () {
+                        title: CategoryButton(
+                          onTapped: () {
                             if (state.moviesList[index].slug != null) {
                               context.router.push(MovieRoute(
                                 passedMovie: state.moviesList[index],
@@ -62,7 +66,7 @@ class MoviesPage extends StatelessWidget implements AutoRouteWrapper {
                               );
                             }
                           },
-                          child: Text(state.moviesList[index].title!),
+                          text: state.moviesList[index].title ?? '',
                         ),
                       );
                     } else {

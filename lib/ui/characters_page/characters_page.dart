@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:potteriana_ult/ui/grid_delegate/grid_delegate.dart';
+import 'package:potteriana_ult/ui/shared/app_theme/app_colors.dart';
 
 import '../../bloc/characters_bloc/characters_bloc.dart';
 import '../../bloc/characters_bloc/characters_state.dart';
@@ -15,12 +16,13 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // backgroundColor: AppColors.gray400,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          centerTitle: true,
+          backgroundColor: AppColors.blue,
           title: const Text("Characters List"),
         ),
-        body: BlocBuilder<CharactersBloc, CharactersState>(
-            builder: (context, state) {
+        body: BlocBuilder<CharactersBloc, CharactersState>(builder: (context, state) {
           if (state.isLoading && state.charactersList.isEmpty) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -33,8 +35,7 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
                   children: [
                     TextButton(
                         onPressed: () async {
-                          await BlocProvider.of<CharactersBloc>(context)
-                              .fetchResults();
+                          await BlocProvider.of<CharactersBloc>(context).fetchResults();
                         },
                         child: Text("REFRESH")),
                     Text(state.exceptionWarning!),
@@ -43,8 +44,7 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
               );
             }
             return RefreshIndicator(
-                onRefresh:
-                    BlocProvider.of<CharactersBloc>(context).fetchResults,
+                onRefresh: BlocProvider.of<CharactersBloc>(context).fetchResults,
                 child: GridView.custom(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -71,27 +71,72 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
                         child: Center(
                           child: Stack(
                             children: [
-                              Image.asset('assets/images/background_cover.jpg'),
-                              if (state.charactersList[index].image != null)
-                                Center(
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.fill,
-                                    imageUrl: state.charactersList[index].image!,
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                )
-                              else
-                                Center(child: Image.asset('assets/images/question_mark.png')),
-                              Align(
-                                alignment: Alignment.bottomCenter,
+                              AspectRatio(
+                                aspectRatio: 1,
                                 child: Container(
-                                    color: Colors.white,
-                                    child: Text(
-                                        "${state.charactersList[index].name}")),
-                              )
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 8,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Stack(
+                                      children: [
+                                        if (state.charactersList[index].image != null)
+                                          Center(
+                                            child: SizedBox(
+                                              child: CachedNetworkImage(
+                                                fit: BoxFit.fill,
+                                                imageUrl: state.charactersList[index].image!,
+                                                placeholder: (context, url) =>
+                                                    const CircularProgressIndicator(),
+                                                errorWidget: (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                              ),
+                                            ),
+                                          )
+                                        else
+                                          Center(
+                                              child:
+                                                  Image.asset('assets/images/question_mark.png')),
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.black54,
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        // Image title text
+                                        Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Text(
+                                              state.charactersList[index].name ?? '',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -99,8 +144,7 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
                     );
                   },
                       isFetching: state.isLoading,
-                      fetchMore:
-                          BlocProvider.of<CharactersBloc>(context).fetchResults,
+                      fetchMore: BlocProvider.of<CharactersBloc>(context).fetchResults,
                       childCount: state.charactersList.length),
                   padding: EdgeInsets.all(8.0),
                 ));
@@ -111,8 +155,7 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<CharactersBloc>(
-      create: (context) =>
-          CharactersBloc(const CharactersState())..fetchResults(),
+      create: (context) => CharactersBloc(const CharactersState())..fetchResults(),
       child: this,
     );
 
