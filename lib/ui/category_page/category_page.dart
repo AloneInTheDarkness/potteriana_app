@@ -30,12 +30,12 @@ class CategoryPage extends StatelessWidget implements AutoRouteWrapper {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextButton(
-                        onPressed: () async {
+                    CategoryButton(
+                        onTapped: () async {
                           await BlocProvider.of<BooksBloc>(context)
                               .fetchResults();
                         },
-                        child: Text("REFRESH")),
+                        text: "REFRESH",),
                     Text(state.exceptionWarning!),
                   ],
                 ),

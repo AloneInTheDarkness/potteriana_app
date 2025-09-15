@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:potteriana_ult/ui/grid_delegate/grid_delegate.dart';
 import 'package:potteriana_ult/ui/shared/app_theme/app_colors.dart';
+import 'package:potteriana_ult/ui/shared/buttons/category_button.dart';
 
 import '../../bloc/characters_bloc/characters_bloc.dart';
 import '../../bloc/characters_bloc/characters_state.dart';
@@ -13,6 +14,8 @@ import '../../navigation/routing/auto_router_config.gr.dart';
 
 @RoutePage()
 class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
+  const CharactersPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +36,12 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextButton(
-                        onPressed: () async {
-                          await BlocProvider.of<CharactersBloc>(context).fetchResults();
-                        },
-                        child: Text("REFRESH")),
+                    CategoryButton(
+                      onTapped: () async {
+                        await BlocProvider.of<CharactersBloc>(context).fetchResults();
+                      },
+                      text: "REFRESH",
+                    ),
                     Text(state.exceptionWarning!),
                   ],
                 ),
@@ -52,12 +56,29 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
                     crossAxisSpacing: 8.0,
                   ),
                   childrenDelegate: SmartPaginator((context, index) {
+                    // Image imageToPass = state.charactersList[index].image != null
+                    //     ? Image.network(
+                    //   state.charactersList[index].image!,
+                    //   fit: BoxFit.cover,
+                    // )
+                    //     : Image.asset('assets/images/question_mark.png');
+                    CachedNetworkImage? imageToPass;
+                    if (state.charactersList[index].image != null) {
+                      imageToPass = CachedNetworkImage(
+                        fit: BoxFit.fill,
+                        imageUrl: state.charactersList[index].image!,
+                        placeholder: (context, url) => const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      );
+                    }
+
                     return Material(
                       child: InkWell(
                         onTap: () {
                           if (state.charactersList[index].slug != null) {
                             context.router.push(CharacterRoute(
                               passedCharacter: state.charactersList[index],
+                              passedCharacterImage: imageToPass,
                             ));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -91,14 +112,7 @@ class CharactersPage extends StatelessWidget implements AutoRouteWrapper {
                                         if (state.charactersList[index].image != null)
                                           Center(
                                             child: SizedBox(
-                                              child: CachedNetworkImage(
-                                                fit: BoxFit.fill,
-                                                imageUrl: state.charactersList[index].image!,
-                                                placeholder: (context, url) =>
-                                                    const CircularProgressIndicator(),
-                                                errorWidget: (context, url, error) =>
-                                                    const Icon(Icons.error),
-                                              ),
+                                              child: imageToPass,
                                             ),
                                           )
                                         else

@@ -1,5 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,13 +18,42 @@ class PotionPage extends StatelessWidget implements AutoRouteWrapper {
   const PotionPage({
     super.key,
     required this.passedPotion,
+    this.passedPotionImage,
   });
 
   final Potion passedPotion;
 
+  final CachedNetworkImage? passedPotionImage;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PotionBloc, PotionState>(builder: (context, state) {
+      if (state.isLoading) {
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 71.5,
+                left: 12,
+                right: 12,
+              ),
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.91,
+                      height: MediaQuery.of(context).size.height * 0.50,
+                      child: passedPotionImage ?? Image.asset('assets/images/question_mark.png'),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+
       Future<void> showNoPotionDialog() async {
         final result = await showDialog<bool>(
             context: context,
@@ -117,16 +147,17 @@ class PotionPage extends StatelessWidget implements AutoRouteWrapper {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 50.0),
+              padding: const EdgeInsets.only(bottom: 71.5, left: 12, right: 12),
               child: ListView(
                 children: [
-                  if (state.potion.image != null)
-                    Image.network(
-                      state.potion.image.toString(),
-                      fit: BoxFit.cover,
-                    )
-                  else
-                    Image.asset('assets/images/question_mark.png'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.91,
+                      height: MediaQuery.of(context).size.height * 0.50,
+                      child: passedPotionImage ?? Image.asset('assets/images/question_mark.png'),
+                    ),
+                  ),
                   if (state.potion.name != null)
                     _buildFancySummary(categoryTitle: "Name: ", content: state.potion.name!),
                   if (state.potion.effect != null)
@@ -154,23 +185,26 @@ class PotionPage extends StatelessWidget implements AutoRouteWrapper {
                 ],
               ),
             ),
-            Column(
-              children: [
-                Expanded(child: SizedBox()),
-                CategoryButton(
-                  buttonColor: AppColors.green,
-                  onTapped: () async {
-                    if (state.potion.wiki != null) {
-                      _launchUrl(
-                        urlPath: state.potion.wiki ?? '',
-                      );
-                    } else {
-                      showNoPotionDialog();
-                    }
-                  },
-                  text: "wikipedia page",
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0, left: 12, right: 12),
+              child: Column(
+                children: [
+                  Expanded(child: SizedBox()),
+                  CategoryButton(
+                    buttonColor: AppColors.green,
+                    onTapped: () async {
+                      if (state.potion.wiki != null) {
+                        _launchUrl(
+                          urlPath: state.potion.wiki ?? '',
+                        );
+                      } else {
+                        showNoPotionDialog();
+                      }
+                    },
+                    text: "wikipedia page",
+                  ),
+                ],
+              ),
             ),
           ],
         ),

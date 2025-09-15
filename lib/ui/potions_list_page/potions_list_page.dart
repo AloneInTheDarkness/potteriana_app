@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:potteriana_ult/bloc/potions_list_bloc/potions_list_state.dart';
 import 'package:potteriana_ult/ui/grid_delegate/grid_delegate.dart';
 import 'package:potteriana_ult/ui/shared/app_theme/app_colors.dart';
+import 'package:potteriana_ult/ui/shared/buttons/category_button.dart';
 
 import '../../bloc/potions_list_bloc/potions_list_bloc.dart';
 import '../../navigation/routing/auto_router_config.gr.dart';
@@ -32,11 +33,12 @@ class PotionsListPage extends StatelessWidget implements AutoRouteWrapper {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextButton(
-                        onPressed: () async {
-                          await BlocProvider.of<PotionsListBloc>(context).fetchResults();
-                        },
-                        child: Text("REFRESH")),
+                    CategoryButton(
+                      onTapped: () async {
+                        await BlocProvider.of<PotionsListBloc>(context).fetchResults();
+                      },
+                      text: "REFRESH",
+                    ),
                     Text(state.exceptionWarning!),
                   ],
                 ),
@@ -51,12 +53,22 @@ class PotionsListPage extends StatelessWidget implements AutoRouteWrapper {
                     crossAxisSpacing: 8.0,
                   ),
                   childrenDelegate: SmartPaginator((context, index) {
+                    CachedNetworkImage? imageToPass;
+                    if (state.potionsList[index].image != null) {
+                      imageToPass = CachedNetworkImage(
+                        fit: BoxFit.fill,
+                        imageUrl: state.potionsList[index].image!,
+                        placeholder: (context, url) => const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      );
+                    }
                     return Material(
                       child: InkWell(
                         onTap: () {
                           if (state.potionsList[index].slug != null) {
                             context.router.push(PotionRoute(
                               passedPotion: state.potionsList[index],
+                              passedPotionImage: imageToPass,
                             ));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

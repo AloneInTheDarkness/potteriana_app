@@ -23,6 +23,25 @@ class MoviePage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MovieBloc, MovieState>(builder: (context, state) {
+
+      if (state.isLoading) {
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 71.5, left: 12, right: 12,),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.91,
+                    height: MediaQuery.of(context).size.height * 0.70,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+
       Future<void> showNoContentDialog({required ContentType contentType}) async {
         final result = await showDialog<bool>(
             context: context,
@@ -116,16 +135,20 @@ class MoviePage extends StatelessWidget implements AutoRouteWrapper {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 100.0),
+              padding: const EdgeInsets.only(bottom: 124.0, left: 12, right: 12),
               child: ListView(
                 children: [
-                  if (state.movie.poster != null)
-                    Image.network(
-                      state.movie.poster.toString(),
-                      fit: BoxFit.cover,
-                    )
-                  else
-                    const Text("No Cover Provided"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.91,
+                      height: MediaQuery.of(context).size.height * 0.65,
+                      child: state.movie.poster != null ? Image.network(
+                        state.movie.poster.toString(),
+                        fit: BoxFit.cover,
+                      ) : Image.asset('assets/images/question_mark.png'),
+                    ),
+                  ),
                   if (state.movie.title != null)
                     _buildFancySummary(categoryTitle: "title: ", content: state.movie.title!),
                   if (state.movie.producers != null && state.movie.producers!.isNotEmpty)
@@ -172,41 +195,44 @@ class MoviePage extends StatelessWidget implements AutoRouteWrapper {
                 ],
               ),
             ),
-            Column(
-              children: [
-                Expanded(child: SizedBox()),
-                CategoryButton(
-                  heightMargin: 0,
-                  buttonColor: AppColors.green,
-                  onTapped: () async {
-                    if (state.movie.trailer != null) {
-                      _launchUrl(
-                        urlPath: state.movie.trailer!,
-                      );
-                    } else {
-                      showNoContentDialog(contentType: ContentType.youtube);
-                    }
-                  },
-                  text: "watch trailer via youtube",
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: CategoryButton(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0, left: 12, right: 12),
+              child: Column(
+                children: [
+                  Expanded(child: SizedBox()),
+                  CategoryButton(
                     heightMargin: 0,
                     buttonColor: AppColors.green,
                     onTapped: () async {
-                      if (state.movie.wiki != null) {
+                      if (state.movie.trailer != null) {
                         _launchUrl(
-                          urlPath: state.movie.wiki ?? '',
+                          urlPath: state.movie.trailer!,
                         );
                       } else {
-                        showNoContentDialog(contentType: ContentType.wikipedia);
+                        showNoContentDialog(contentType: ContentType.youtube);
                       }
                     },
-                    text: "wikipedia page",
+                    text: "watch trailer via youtube",
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: CategoryButton(
+                      heightMargin: 0,
+                      buttonColor: AppColors.green,
+                      onTapped: () async {
+                        if (state.movie.wiki != null) {
+                          _launchUrl(
+                            urlPath: state.movie.wiki ?? '',
+                          );
+                        } else {
+                          showNoContentDialog(contentType: ContentType.wikipedia);
+                        }
+                      },
+                      text: "wikipedia page",
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

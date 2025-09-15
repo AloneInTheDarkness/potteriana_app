@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:potteriana_ult/ui/shared/app_theme/app_colors.dart';
+import 'package:potteriana_ult/ui/shared/buttons/category_button.dart';
 
 import '../../bloc/spells_list_bloc/spells_list_bloc.dart';
 import '../../bloc/spells_list_bloc/spells_list_state.dart';
@@ -13,6 +14,8 @@ import '../grid_delegate/grid_delegate.dart';
 
 @RoutePage()
 class SpellsListPage extends StatelessWidget implements AutoRouteWrapper {
+  const SpellsListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +36,12 @@ class SpellsListPage extends StatelessWidget implements AutoRouteWrapper {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        TextButton(
-                            onPressed: () async {
+                        CategoryButton(
+                            onTapped: () async {
                               await BlocProvider.of<SpellsListBloc>(context)
                                   .fetchResults();
                             },
-                            child: Text("REFRESH")),
+                            text: "REFRESH",),
                         Text(state.exceptionWarning!),
                       ],
                     ),
@@ -54,12 +57,22 @@ class SpellsListPage extends StatelessWidget implements AutoRouteWrapper {
                         crossAxisSpacing: 8.0,
                       ),
                       childrenDelegate: SmartPaginator((context, index) {
+                        CachedNetworkImage? imageToPass;
+                        if (state.spellsList[index].image != null) {
+                          imageToPass = CachedNetworkImage(
+                            fit: BoxFit.fill,
+                            imageUrl: state.spellsList[index].image!,
+                            placeholder: (context, url) => const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                          );
+                        }
                         return Material(
                           child: InkWell(
                             onTap: () {
                               if (state.spellsList[index].slug != null) {
                                 context.router.push(SpellRoute(
                                   passedSpell: state.spellsList[index],
+                                  passedSpellImage: imageToPass,
                                 ));
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(

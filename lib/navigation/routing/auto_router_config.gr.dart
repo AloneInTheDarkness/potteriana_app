@@ -9,13 +9,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i14;
-import 'package:flutter/cupertino.dart' as _i19;
+import 'package:cached_network_image/cached_network_image.dart' as _i18;
+import 'package:flutter/cupertino.dart' as _i20;
 import 'package:flutter/material.dart' as _i15;
 import 'package:potteriana_ult/models/book/book.dart' as _i16;
 import 'package:potteriana_ult/models/character/character.dart' as _i17;
-import 'package:potteriana_ult/models/movie/movie.dart' as _i18;
-import 'package:potteriana_ult/models/potion/potion.dart' as _i20;
-import 'package:potteriana_ult/models/spell/spell.dart' as _i21;
+import 'package:potteriana_ult/models/movie/movie.dart' as _i19;
+import 'package:potteriana_ult/models/potion/potion.dart' as _i21;
+import 'package:potteriana_ult/models/spell/spell.dart' as _i22;
 import 'package:potteriana_ult/ui/book_page/book_page.dart' as _i1;
 import 'package:potteriana_ult/ui/category_page/category_page.dart' as _i2;
 import 'package:potteriana_ult/ui/character_page/character_page.dart' as _i3;
@@ -105,12 +106,14 @@ class CharacterRoute extends _i14.PageRouteInfo<CharacterRouteArgs> {
   CharacterRoute({
     _i15.Key? key,
     required _i17.Character passedCharacter,
+    _i18.CachedNetworkImage? passedCharacterImage,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           CharacterRoute.name,
           args: CharacterRouteArgs(
             key: key,
             passedCharacter: passedCharacter,
+            passedCharacterImage: passedCharacterImage,
           ),
           initialChildren: children,
         );
@@ -125,6 +128,7 @@ class CharacterRoute extends _i14.PageRouteInfo<CharacterRouteArgs> {
           child: _i3.CharacterPage(
         key: args.key,
         passedCharacter: args.passedCharacter,
+        passedCharacterImage: args.passedCharacterImage,
       ));
     },
   );
@@ -134,15 +138,18 @@ class CharacterRouteArgs {
   const CharacterRouteArgs({
     this.key,
     required this.passedCharacter,
+    this.passedCharacterImage,
   });
 
   final _i15.Key? key;
 
   final _i17.Character passedCharacter;
 
+  final _i18.CachedNetworkImage? passedCharacterImage;
+
   @override
   String toString() {
-    return 'CharacterRouteArgs{key: $key, passedCharacter: $passedCharacter}';
+    return 'CharacterRouteArgs{key: $key, passedCharacter: $passedCharacter, passedCharacterImage: $passedCharacterImage}';
   }
 }
 
@@ -160,7 +167,7 @@ class CharactersRoute extends _i14.PageRouteInfo<void> {
   static _i14.PageInfo page = _i14.PageInfo(
     name,
     builder: (data) {
-      return _i14.WrappedRoute(child: _i4.CharactersPage());
+      return _i14.WrappedRoute(child: const _i4.CharactersPage());
     },
   );
 }
@@ -189,7 +196,7 @@ class GifRoute extends _i14.PageRouteInfo<void> {
 class MovieRoute extends _i14.PageRouteInfo<MovieRouteArgs> {
   MovieRoute({
     _i15.Key? key,
-    required _i18.Movie passedMovie,
+    required _i19.Movie passedMovie,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           MovieRoute.name,
@@ -223,7 +230,7 @@ class MovieRouteArgs {
 
   final _i15.Key? key;
 
-  final _i18.Movie passedMovie;
+  final _i19.Movie passedMovie;
 
   @override
   String toString() {
@@ -273,14 +280,16 @@ class MyHomeRoute extends _i14.PageRouteInfo<void> {
 /// [_i9.PotionPage]
 class PotionRoute extends _i14.PageRouteInfo<PotionRouteArgs> {
   PotionRoute({
-    _i19.Key? key,
-    required _i20.Potion passedPotion,
+    _i20.Key? key,
+    required _i21.Potion passedPotion,
+    _i18.CachedNetworkImage? passedPotionImage,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           PotionRoute.name,
           args: PotionRouteArgs(
             key: key,
             passedPotion: passedPotion,
+            passedPotionImage: passedPotionImage,
           ),
           initialChildren: children,
         );
@@ -295,6 +304,7 @@ class PotionRoute extends _i14.PageRouteInfo<PotionRouteArgs> {
           child: _i9.PotionPage(
         key: args.key,
         passedPotion: args.passedPotion,
+        passedPotionImage: args.passedPotionImage,
       ));
     },
   );
@@ -304,15 +314,18 @@ class PotionRouteArgs {
   const PotionRouteArgs({
     this.key,
     required this.passedPotion,
+    this.passedPotionImage,
   });
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
-  final _i20.Potion passedPotion;
+  final _i21.Potion passedPotion;
+
+  final _i18.CachedNetworkImage? passedPotionImage;
 
   @override
   String toString() {
-    return 'PotionRouteArgs{key: $key, passedPotion: $passedPotion}';
+    return 'PotionRouteArgs{key: $key, passedPotion: $passedPotion, passedPotionImage: $passedPotionImage}';
   }
 }
 
@@ -339,14 +352,16 @@ class PotionsListRoute extends _i14.PageRouteInfo<void> {
 /// [_i11.SpellPage]
 class SpellRoute extends _i14.PageRouteInfo<SpellRouteArgs> {
   SpellRoute({
-    _i19.Key? key,
-    required _i21.Spell passedSpell,
+    _i15.Key? key,
+    required _i22.Spell passedSpell,
+    _i18.CachedNetworkImage? passedSpellImage,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           SpellRoute.name,
           args: SpellRouteArgs(
             key: key,
             passedSpell: passedSpell,
+            passedSpellImage: passedSpellImage,
           ),
           initialChildren: children,
         );
@@ -361,6 +376,7 @@ class SpellRoute extends _i14.PageRouteInfo<SpellRouteArgs> {
           child: _i11.SpellPage(
         key: args.key,
         passedSpell: args.passedSpell,
+        passedSpellImage: args.passedSpellImage,
       ));
     },
   );
@@ -370,15 +386,18 @@ class SpellRouteArgs {
   const SpellRouteArgs({
     this.key,
     required this.passedSpell,
+    this.passedSpellImage,
   });
 
-  final _i19.Key? key;
+  final _i15.Key? key;
 
-  final _i21.Spell passedSpell;
+  final _i22.Spell passedSpell;
+
+  final _i18.CachedNetworkImage? passedSpellImage;
 
   @override
   String toString() {
-    return 'SpellRouteArgs{key: $key, passedSpell: $passedSpell}';
+    return 'SpellRouteArgs{key: $key, passedSpell: $passedSpell, passedSpellImage: $passedSpellImage}';
   }
 }
 
@@ -396,7 +415,7 @@ class SpellsListRoute extends _i14.PageRouteInfo<void> {
   static _i14.PageInfo page = _i14.PageInfo(
     name,
     builder: (data) {
-      return _i14.WrappedRoute(child: _i12.SpellsListPage());
+      return _i14.WrappedRoute(child: const _i12.SpellsListPage());
     },
   );
 }

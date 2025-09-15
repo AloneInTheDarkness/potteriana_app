@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:potteriana_ult/ui/shared/app_theme/app_colors.dart';
@@ -14,13 +15,38 @@ class CharacterPage extends StatelessWidget implements AutoRouteWrapper {
   const CharacterPage({
     super.key,
     required this.passedCharacter,
+    this.passedCharacterImage,
   });
 
   final Character passedCharacter;
+  final CachedNetworkImage? passedCharacterImage;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CharacterBloc, CharacterState>(builder: (context, state) {
+
+      if (state.isLoading) {
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 71.5, left: 12, right: 12,),
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.91,
+                      height: MediaQuery.of(context).size.height * 0.70,
+                      child: passedCharacterImage ?? Image.asset('assets/images/question_mark.png'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+
       Future<void> showNoPageDialog() async {
         final result = await showDialog<bool>(
             context: context,
@@ -111,16 +137,17 @@ class CharacterPage extends StatelessWidget implements AutoRouteWrapper {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 50.0),
+              padding: const EdgeInsets.only(bottom: 71.5, left: 12, right: 12),
               child: ListView(
                 children: [
-                  if (state.character.image != null)
-                    Image.network(
-                      state.character.image.toString(),
-                      fit: BoxFit.cover,
-                    )
-                  else
-                    Image.asset('assets/images/question_mark.png'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.91,
+                      height: MediaQuery.of(context).size.height * 0.70,
+                      child: passedCharacterImage ?? Image.asset('assets/images/question_mark.png'),
+                    ),
+                  ),
                   if (state.character.name != null)
                     _buildFancySummary(categoryTitle: "Name: ", content: state.character.name!),
                   if (state.character.animagus != null)
@@ -188,23 +215,26 @@ class CharacterPage extends StatelessWidget implements AutoRouteWrapper {
                 ],
               ),
             ),
-            Column(
-              children: [
-                Expanded(child: SizedBox()),
-                CategoryButton(
-                  buttonColor: AppColors.green,
-                  onTapped: () async {
-                    if (state.character.wiki != null) {
-                      _launchUrl(
-                        urlPath: state.character.wiki ?? '',
-                      );
-                    } else {
-                      showNoPageDialog();
-                    }
-                  },
-                  text: "wikipedia page",
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0, left: 12, right: 12),
+              child: Column(
+                children: [
+                  Expanded(child: SizedBox()),
+                  CategoryButton(
+                    buttonColor: AppColors.green,
+                    onTapped: () async {
+                      if (state.character.wiki != null) {
+                        _launchUrl(
+                          urlPath: state.character.wiki ?? '',
+                        );
+                      } else {
+                        showNoPageDialog();
+                      }
+                    },
+                    text: "wikipedia page",
+                  ),
+                ],
+              ),
             ),
           ],
         ),

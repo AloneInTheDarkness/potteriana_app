@@ -21,6 +21,25 @@ class BookPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BookBloc, BookState>(builder: (context, state) {
+
+      if (state.isLoading) {
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 71.5, left: 12, right: 12,),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.91,
+                    height: MediaQuery.of(context).size.height * 0.70,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+
       Future<void> showNoPageDialog() async {
         final result = await showDialog<bool>(
             context: context,
@@ -80,7 +99,7 @@ class BookPage extends StatelessWidget implements AutoRouteWrapper {
                       ),
                       Column(
                         children: [
-                          Expanded(child: SizedBox()),
+                          const Expanded(child: SizedBox()),
                           Padding(
                             padding: const EdgeInsets.only(top: 20.0, bottom: 20),
                             child: Padding(
@@ -102,8 +121,6 @@ class BookPage extends StatelessWidget implements AutoRouteWrapper {
             });
       }
 
-      ;
-
       return Scaffold(
         // backgroundColor: AppColors.gray400,
         appBar: AppBar(
@@ -114,16 +131,20 @@ class BookPage extends StatelessWidget implements AutoRouteWrapper {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 50.0),
+              padding: const EdgeInsets.only(bottom: 71.5, left: 12, right: 12,),
               child: ListView(
                 children: [
-                  if (state.book.cover != null)
-                    Image.network(
-                      state.book.cover.toString(),
-                      fit: BoxFit.cover,
-                    )
-                  else
-                    const Text("No Cover Provided"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.91,
+                      height: MediaQuery.of(context).size.height * 0.70,
+                      child: state.book.cover != null ? Image.network(
+                        state.book.cover.toString(),
+                        fit: BoxFit.cover,
+                      ) : Image.asset('assets/images/question_mark.png'),
+                    ),
+                  ),
                   if (state.book.title != null)
                     _buildFancySummary(categoryTitle: "title: ", content: state.book.title!),
                   if (state.book.author != null)
@@ -142,23 +163,26 @@ class BookPage extends StatelessWidget implements AutoRouteWrapper {
                 ],
               ),
             ),
-            Column(
-              children: [
-                Expanded(child: SizedBox()),
-                CategoryButton(
-                  buttonColor: AppColors.green,
-                  onTapped: () async {
-                    if (state.book.wiki != null) {
-                      _launchUrl(
-                        urlPath: state.book.wiki ?? '',
-                      );
-                    } else {
-                      showNoPageDialog();
-                    }
-                  },
-                  text: "wikipedia page",
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0, left: 12, right: 12),
+              child: Column(
+                children: [
+                  const Expanded(child: SizedBox()),
+                  CategoryButton(
+                    buttonColor: AppColors.green,
+                    onTapped: () async {
+                      if (state.book.wiki != null) {
+                        _launchUrl(
+                          urlPath: state.book.wiki ?? '',
+                        );
+                      } else {
+                        showNoPageDialog();
+                      }
+                    },
+                    text: "wikipedia page",
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -182,7 +206,7 @@ class BookPage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildFancySummary({required String categoryTitle, required String content}) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [AppColors.gray300, AppColors.cyan],
